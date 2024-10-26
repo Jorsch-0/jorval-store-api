@@ -2,6 +2,7 @@ import { env } from '@/infrastructure/config/env';
 import { CustomError } from '@/domain/errors/custom.error';
 import { Response } from 'express';
 import { ZodError } from 'zod';
+import { HttpStatusCode } from '../utils/constants';
 
 const checkErrorType = (err: Error): CustomError => {
   if (err instanceof CustomError) {
@@ -16,7 +17,7 @@ const checkErrorType = (err: Error): CustomError => {
 };
 
 export class ResponseHandler {
-  static success(res: Response, data: unknown, statusCode = 200) {
+  static success(res: Response, data: unknown, statusCode: HttpStatusCode) {
     res.status(statusCode).json({
       status: 'success',
       data,

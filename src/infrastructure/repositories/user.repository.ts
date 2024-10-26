@@ -1,4 +1,3 @@
-import { SignupSchema } from '@/application/components/auth/auth.schemas';
 import { PrismaModule } from '../modules/prisma';
 import { PrismaClient } from '@prisma/client';
 import { User } from '@/domain/entities/user.entity';

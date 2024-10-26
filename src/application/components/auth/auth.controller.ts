@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { loginSchema, signupSchema } from './auth.schemas';
 import { AuthService } from './auth.service';
+import { ResponseHandler } from '@/infrastructure/handlers/response.handler';
+import { HttpStatusCode } from '@/infrastructure/utils/constants';
 
 const tokenExpirationDate = new Date(Date.now() + 24 * 60 * 60 * 1000);
 const secureCookie = process.env.NODE_ENV === 'production';
@@ -13,7 +15,7 @@ export const signup = async (req: Request, res: Response) => {
   const { user, token } = await authService.signup(data);
 
   res.cookie('jwt', token, { expires: tokenExpirationDate, httpOnly: true, secure: secureCookie });
-  res.status(201).json({ user });
+  return ResponseHandler.success(res, { user }, HttpStatusCode.CREATED);
 };
 
 export const login = async (req: Request, res: Response) => {
@@ -22,5 +24,5 @@ export const login = async (req: Request, res: Response) => {
   const { user, token } = await authService.login(data);
 
   res.cookie('jwt', token, { expires: tokenExpirationDate, httpOnly: true, secure: secureCookie });
-  res.status(200).json({ user });
+  return ResponseHandler.success(res, { user }, HttpStatusCode.OK);
 };
