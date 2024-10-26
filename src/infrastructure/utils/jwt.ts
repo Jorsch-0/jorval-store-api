@@ -1,6 +1,7 @@
 import { sign, verify } from 'jsonwebtoken';
+import { env } from '../config/env';
 
-const secret = process.env.JWT_SECRET as string;
+const secret = env.JWT_SECRET;
 
 export class Jwt {
   static generateToken(payload: string | object, expiresIn?: string | number) {

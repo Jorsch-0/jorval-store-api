@@ -5,6 +5,7 @@ import { ResponseHandler } from '../handlers/response.handler';
 import { corsMiddleware } from '../middlewares/cors';
 import { logger } from '../modules/logger';
 import { pinoHttp } from 'pino-http';
+import cookieParser from 'cookie-parser';
 
 export async function expressLoader(app: express.Application) {
   app.use(pinoHttp({ logger }));
@@ -14,6 +15,7 @@ export async function expressLoader(app: express.Application) {
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
+  app.use(cookieParser());
 
   app.get('/', (_req, res) => {
     res.send('Ok!');
