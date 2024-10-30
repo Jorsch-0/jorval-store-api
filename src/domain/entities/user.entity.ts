@@ -1,7 +1,8 @@
 import { Bcrypt } from '@/infrastructure/utils/bcrypt';
 import { Role } from '@prisma/client';
+import { iEntity } from './iEntity';
 
-export class User {
+export class User extends iEntity {
   private id: string;
   private name: string;
   private email: string;
@@ -9,6 +10,7 @@ export class User {
   private role: Role;
 
   constructor(data: { id: string; name: string; email: string; password: string; role: Role }) {
+    super();
     this.id = data.id;
     this.name = data.name;
     this.email = data.email;

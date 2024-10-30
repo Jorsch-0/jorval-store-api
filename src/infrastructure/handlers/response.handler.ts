@@ -4,6 +4,17 @@ import { Response } from 'express';
 import { ZodError } from 'zod';
 import { HttpStatusCode } from '../utils/constants';
 
+type Pagination = {
+  page: number;
+  total: number;
+};
+
+type SuccessResponse = {
+  status: string;
+  data: unknown;
+  pagination?: Pagination;
+};
+
 const checkErrorType = (err: Error): CustomError => {
   if (err instanceof CustomError) {
     return err;
@@ -17,11 +28,17 @@ const checkErrorType = (err: Error): CustomError => {
 };
 
 export class ResponseHandler {
-  static success(res: Response, data: unknown, statusCode: HttpStatusCode) {
-    res.status(statusCode).json({
+  static success(res: Response, data: unknown, statusCode: HttpStatusCode, pagination?: Pagination) {
+    const response: SuccessResponse = {
       status: 'success',
       data,
-    });
+    };
+
+    if (pagination) {
+      response['pagination'] = pagination;
+    }
+
+    res.status(statusCode).json(response);
   }
 
   static error(err: Error, res: Response) {
