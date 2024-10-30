@@ -26,4 +26,18 @@ export class CategoryRepository {
 
     return categories.map((category) => CategoryFactory.createFromDb(category));
   }
+
+  async getById(id: string) {
+    const category = await this.client.category.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!category) {
+      return null;
+    }
+
+    return CategoryFactory.createFromDb(category);
+  }
 }
