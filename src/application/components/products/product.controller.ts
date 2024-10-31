@@ -6,7 +6,7 @@ import { createProductSchema, getProductBySlugSchema, getProductsSchema } from '
 
 const productService = new ProductService();
 
-export const create = async (req: Request, res: Response) => {
+export const createProduct = async (req: Request, res: Response) => {
   const data = createProductSchema.parse(req.body);
 
   const product = await productService.create(data);
@@ -14,7 +14,7 @@ export const create = async (req: Request, res: Response) => {
   return ResponseHandler.success(res, product.toSafeObject, HttpStatusCode.CREATED);
 };
 
-export const getAll = async (req: Request, res: Response) => {
+export const getProducts = async (req: Request, res: Response) => {
   const { query } = getProductsSchema.parse(req);
 
   const { products, total } = await productService.getAll(query);
@@ -29,7 +29,7 @@ export const getAll = async (req: Request, res: Response) => {
   return ResponseHandler.success(res, data, HttpStatusCode.OK, pagination);
 };
 
-export const getBySlug = async (req: Request, res: Response) => {
+export const getProduct = async (req: Request, res: Response) => {
   const { slug } = getProductBySlugSchema.parse(req.params);
 
   const product = await productService.getBySlug(slug);

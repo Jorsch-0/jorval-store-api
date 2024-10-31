@@ -6,7 +6,7 @@ import { HttpStatusCode } from '@/infrastructure/utils/constants';
 
 const categoryService = new CategoryService();
 
-export const create = async (req: Request, res: Response) => {
+export const createCategory = async (req: Request, res: Response) => {
   const data = createCategorySchema.parse(req.body);
 
   const category = await categoryService.create(data);
@@ -14,7 +14,7 @@ export const create = async (req: Request, res: Response) => {
   return ResponseHandler.success(res, category, HttpStatusCode.CREATED);
 };
 
-export const getAll = async (_req: Request, res: Response) => {
+export const getCategories = async (_req: Request, res: Response) => {
   const categories = await categoryService.getAll();
 
   return ResponseHandler.success(res, categories, HttpStatusCode.OK);
