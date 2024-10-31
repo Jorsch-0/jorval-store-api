@@ -1,18 +1,18 @@
 import { LoginSchema, SignupSchema } from './auth.schemas';
 import { Jwt } from '@/infrastructure/utils/jwt';
-import { UserRepository } from '@/infrastructure/repositories/user.repository';
 import { CustomError } from '@/domain/errors/custom.error';
 import { UserFactory } from '@/infrastructure/factories/user.factory';
+import { UserService } from '../users/user.service';
 
 export class AuthService {
-  private userRepository: UserRepository;
+  private userService: UserService;
 
   constructor() {
-    this.userRepository = new UserRepository();
+    this.userService = new UserService();
   }
 
   async signup(data: SignupSchema) {
-    const user = await this.userRepository.getByEmail(data.email);
+    const user = await this.userService.getByEmail(data.email);
     if (user) {
       throw CustomError.badRequest('User already exists');
     }
@@ -20,7 +20,7 @@ export class AuthService {
     const newUser = UserFactory.createFromMinimalInputs(data);
     newUser.hashPassword();
 
-    const userCreated = await this.userRepository.create(newUser);
+    const userCreated = await this.userService.create(newUser);
 
     const token = Jwt.generateToken(userCreated.toSafeObject, '1d');
 
@@ -28,7 +28,7 @@ export class AuthService {
   }
 
   async login(data: LoginSchema) {
-    const user = await this.userRepository.getByEmail(data.email);
+    const user = await this.userService.getByEmail(data.email);
     if (!user) {
       throw CustomError.notFound('User not found');
     }
