@@ -11,7 +11,7 @@ type Pagination = {
 
 type SuccessResponse = {
   status: string;
-  data: unknown;
+  data?: unknown;
   pagination?: Pagination;
 };
 
@@ -31,9 +31,11 @@ export class ResponseHandler {
   static success(res: Response, data: unknown, statusCode: HttpStatusCode, pagination?: Pagination) {
     const response: SuccessResponse = {
       status: 'success',
-      data,
     };
 
+    if (data) {
+      response['data'] = data;
+    }
     if (pagination) {
       response['pagination'] = pagination;
     }

@@ -2,6 +2,7 @@ import { LoginSchema, SignupSchema } from './auth.schemas';
 import { Jwt } from '@/infrastructure/utils/jwt';
 import { CustomError } from '@/domain/errors/custom.error';
 import { UserFactory } from '@/infrastructure/factories/user.factory';
+import { CartService } from '../cart/cart.service';
 import { UserService } from '../users/user.service';
 
 export class AuthService {
@@ -21,6 +22,9 @@ export class AuthService {
     newUser.hashPassword();
 
     const userCreated = await this.userService.create(newUser);
+
+    const cartService = new CartService();
+    await cartService.create(userCreated);
 
     const token = Jwt.generateToken(userCreated.toSafeObject, '1d');
 
