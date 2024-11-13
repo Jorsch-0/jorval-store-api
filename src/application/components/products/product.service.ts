@@ -37,4 +37,16 @@ export class ProductService {
 
     return product;
   }
+
+  async reduceStock(slug: string, quantity: number) {
+    const product = await this.getBySlug(slug);
+
+    if (product.toSafeObject.stock < quantity) {
+      throw CustomError.badRequest('Not enough stock');
+    }
+    const newStock = product.toSafeObject.stock - quantity;
+    product.setStock(newStock);
+
+    return this.productRepository.update(product);
+  }
 }

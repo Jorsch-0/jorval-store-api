@@ -39,4 +39,8 @@ export class Product extends iEntity {
       images: this.images,
     };
   }
+
+  setStock(stock: number) {
+    this.stock = stock;
+  }
 }

@@ -25,6 +25,7 @@ model User {
   password  String
   role      Role     @default(USER)
   Cart      Cart?
+  Orders    Order[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -72,4 +73,13 @@ model CartItem {
   updatedAt DateTime @updatedAt
 
   @@unique([productId, cartId])
+}
+
+model Order {
+  id        String   @id @default(uuid())
+  userId    String
+  User      User     @relation(fields: [userId], references: [id])
+  details   Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

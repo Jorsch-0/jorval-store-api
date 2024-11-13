@@ -106,4 +106,21 @@ export class ProductRepository {
 
     return ProductFactory.createFromDb(product);
   }
+
+  async update(product: Product) {
+    const updatedProduct = await this.client.product.update({
+      where: {
+        id: product.toSafeObject.id,
+      },
+      data: {
+        title: product.toSafeObject.title,
+        description: product.toSafeObject.description,
+        price: product.toSafeObject.price,
+        stock: product.toSafeObject.stock,
+        images: product.toSafeObject.images,
+      },
+    });
+
+    return ProductFactory.createFromDb(updatedProduct);
+  }
 }

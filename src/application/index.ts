@@ -4,6 +4,7 @@ import { CustomError } from '@/domain/errors/custom.error';
 import { categoryRoutes } from './routes/category';
 import { productRoutes } from './routes/product';
 import { cartRoutes } from './routes/cart';
+import { orderRoutes } from './routes/order';
 
 export async function routes(app: Application) {
   const router = Router();
@@ -18,6 +19,7 @@ export async function routes(app: Application) {
   categoryRoutes(router);
   productRoutes(router);
   cartRoutes(router);
+  orderRoutes(router);
 
   router.all('*', (_req, _res, next) => {
     const err = CustomError.notFound('Not found');

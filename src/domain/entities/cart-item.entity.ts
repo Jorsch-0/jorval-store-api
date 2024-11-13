@@ -20,4 +20,8 @@ export class CartItem extends iEntity {
       Product: this.Product.toSafeObject,
     };
   }
+
+  setQuantity(quantity: number) {
+    this.quantity = quantity;
+  }
 }

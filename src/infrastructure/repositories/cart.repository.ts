@@ -4,6 +4,8 @@ import { CartFactory } from '../factories/cart.factory';
 import { Cart } from '@/domain/entities/cart.entity';
 import { User } from '@/domain/entities/user.entity';
 import { Product } from '@/domain/entities/product.entity';
+import { CartItemFactory } from '../factories/cart-item.factory';
+import { CartItem } from '@/domain/entities/cart-item.entity';
 
 export class CartRepository {
   private readonly client: PrismaClient;
@@ -54,20 +56,29 @@ export class CartRepository {
     return cart ? CartFactory.createFromDb(cart) : null;
   }
 
-  async addProduct(cart: Cart, product: Product, quantity: number) {
-    await this.client.cartItem.upsert({
+  async getCartItemByProduct(cart: Cart, product: Product) {
+    const cartItem = await this.client.cartItem.findUnique({
       where: {
         productId_cartId: {
           productId: product.toSafeObject.id,
           cartId: cart.toSafeObject.id,
         },
       },
-      update: {
-        quantity: {
-          increment: quantity,
-        },
+      include: {
+        Product: true,
       },
-      create: {
+    });
+
+    if (!cartItem) {
+      return null;
+    }
+
+    return CartItemFactory.createFromDb(cartItem);
+  }
+
+  async createCartItem(cart: Cart, product: Product, quantity: number) {
+    await this.client.cartItem.create({
+      data: {
         quantity,
         Product: {
           connect: {
@@ -83,41 +94,22 @@ export class CartRepository {
     });
   }
 
-  async removeProduct(cart: Cart, product: Product, quantity: number) {
-    const cartItem = await this.client.cartItem.findUnique({
+  async updateCartItem(cartItem: CartItem) {
+    await this.client.cartItem.update({
       where: {
-        productId_cartId: {
-          productId: product.toSafeObject.id,
-          cartId: cart.toSafeObject.id,
-        },
+        id: cartItem.toSafeObject.id,
+      },
+      data: {
+        quantity: cartItem.toSafeObject.quantity,
       },
     });
+  }
 
-    if (!cartItem) {
-      return;
-    } else if (cartItem.quantity <= quantity) {
-      await this.client.cartItem.delete({
-        where: {
-          productId_cartId: {
-            productId: product.toSafeObject.id,
-            cartId: cart.toSafeObject.id,
-          },
-        },
-      });
-    } else {
-      await this.client.cartItem.update({
-        where: {
-          productId_cartId: {
-            productId: product.toSafeObject.id,
-            cartId: cart.toSafeObject.id,
-          },
-        },
-        data: {
-          quantity: {
-            decrement: quantity,
-          },
-        },
-      });
-    }
+  async deleteCartItem(cartItem: CartItem) {
+    await this.client.cartItem.delete({
+      where: {
+        id: cartItem.toSafeObject.id,
+      },
+    });
   }
 }

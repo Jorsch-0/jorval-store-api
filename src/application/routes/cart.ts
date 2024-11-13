@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { tryCatch } from '@/infrastructure/middlewares/try-catch';
-import { addProductToCart, getCart, removeProductFromCart } from '../components/cart/cart.controller';
+import { addProductToCart, checkout, getCart, removeProductFromCart } from '../components/cart/cart.controller';
 import { authenticate } from '@/infrastructure/permissions';
 
 export async function cartRoutes(mainRouter: Router) {
@@ -13,4 +13,6 @@ export async function cartRoutes(mainRouter: Router) {
   router.post('/add', authenticate, tryCatch(addProductToCart));
 
   router.post('/remove', authenticate, tryCatch(removeProductFromCart));
+
+  router.post('/checkout', authenticate, tryCatch(checkout));
 }
